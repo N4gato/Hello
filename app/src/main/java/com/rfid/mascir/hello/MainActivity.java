@@ -1,5 +1,6 @@
 package com.rfid.mascir.hello;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.Console;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +32,12 @@ public class MainActivity extends AppCompatActivity {
     EditText editText;
     String tagId;
     Editable tagIdRaw;
+    private final static String TAG = "TestActivity";
+    String FILENAME = "data";
+    FileOutputStream outputStream;
+
+    //just to try
+    FileInputStream ifs = null;
 
 
     @Override
@@ -48,20 +62,60 @@ public class MainActivity extends AppCompatActivity {
         editText = (EditText) findViewById(R.id.editText);
 
 
+
+
+
+    }
+
+    /* (non-Javadoc)
+  * @see android.app.Activity#onStart()
+  */
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+        Log.i(TAG, "On Start .....");
         Valid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 tagId = String.valueOf(editText.getText());
-                tagIdRaw = editText.getText();
-               //notsure its working cuz i do not read the tag on pc
-               // System.out.println("the raw value is " + tagIdRaw);
+                //String prepare = String.format("%s", tagId + new Date());
+                String prepare = "hello saving " ;
+                try {
+                    outputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+                    outputStream.write(prepare.getBytes());
+                    outputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                editText.setText(" ");
+                Snackbar.make(v, "Tag Serial saved", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                //editText.setText(" ");
+
             }
         });
     }
+    /* (non-Javadoc)
+    * @see android.app.Activity#onPause()
+    */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "On Pause .....");
 
+        try {
+            ifs = openFileInput(FILENAME);
+            String dataR = String.valueOf(ifs.read());
+            System.out.println("data read :"+ Arrays.toString(dataR.getBytes()));
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -83,4 +137,40 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "On Destroy .....");
+    }
+
+
+    /* (non-Javadoc)
+    * @see android.app.Activity#onRestart()
+    */
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.i(TAG, "On Restart .....");
+
+    }
+
+    /* (non-Javadoc)
+    * @see android.app.Activity#onResume()
+    */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "On Resume .....");
+    }
+
+    /* (non-Javadoc)
+    * @see android.app.Activity#onStop()
+    */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG, "On Stop .....");
+    }
 }
+
