@@ -13,10 +13,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.Console;
 import java.io.FileInputStream;
@@ -32,10 +34,13 @@ public class MainActivity extends AppCompatActivity {
     TextView  textView;
     Button Valid;
     Button history;
+    Button btnShowLocation;
     EditText editText;
 
     String tagId;
     //create the Tag
+
+    GPSTracker gps;
 
     Tag tag = new Tag();
     Date date = new Date() ;
@@ -51,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         textView =  (TextView) findViewById(R.id.textView);
         Valid = (Button) findViewById(R.id.button);
         history = (Button) findViewById(R.id.history);
+        btnShowLocation = (Button) findViewById(R.id.gps);
         editText = (EditText) findViewById(R.id.editText);
 
 
@@ -79,11 +85,35 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         valid();
         hystory();
+        showgps();
     }
 
 
+    public void showgps(){
+
+        btnShowLocation.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                gps = new GPSTracker(MainActivity.this);
+
+                if(gps.canGetLocation()) {
+                    double latitude = gps.getLatitude();
+                    double longitude = gps.getLongitude();
+
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Your Location is -\nLat: " + latitude + "\nLong: "
+                                    + longitude, Toast.LENGTH_LONG).show();
+                } else {
+                    gps.showSettingsAlert();
+                }
+            }
+        });
+    }
+
     public void valid(){
-        Valid.setOnClickListener(new View.OnClickListener() {
+        Valid.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -100,24 +130,24 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void hystory (){
-        history.setOnClickListener(new View.OnClickListener() {
+        history.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Cursor c = dbHandler.db2string();
-                if (c.getCount()== 0){
+                if (c.getCount() == 0) {
                     //watch.setText("NO DATA AVAILIBALE");
-                    dialogShow("Error","NO DATA AVAILIBALE");
+                    dialogShow("Error", "NO DATA AVAILIBALE");
                     return;
                 }
                 StringBuffer buffer = new StringBuffer();
                 while (c.moveToNext()) {
-                    buffer.append("ID :" + c.getString(0)+"\n");
-                    buffer.append("TagID :" + c.getString(1)+"\n");
-                    buffer.append("DATE :" + c.getString(2)+"\n\n ");
+                    buffer.append("ID :" + c.getString(0) + "\n");
+                    buffer.append("TagID :" + c.getString(1) + "\n");
+                    buffer.append("DATE :" + c.getString(2) + "\n\n ");
                 }
 
-                dialogShow("Hustory",buffer.toString());
+                dialogShow("Hustory", buffer.toString());
 
                 //show all data
             }
@@ -144,16 +174,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        //try {
-            // ifs = openFileInput(FILENAME);
-            //          String dataR = String.valueOf(ifs.read());
-//            System.out.println("data read :"+ Arrays.toString(dataR.getBytes()));
+    }
 
-            // } catch (FileNotFoundException e) {
-            //      e.printStackTrace();
-      //  } catch (IOException e) {
-            //      e.printStackTrace();
-      //  }
+    protected void OnDestroy(){
+        super.onDestroy();
+        dbHandler.close();
+        System.out.println("deconnection done");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

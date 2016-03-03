@@ -46,8 +46,6 @@ public class DbHandler extends SQLiteOpenHelper {
         values.put(COLUMN_DATE, tag.getDate());
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_NAME, null, values);
-
-
     }
 
     public Cursor db2string(){
@@ -68,6 +66,11 @@ public class DbHandler extends SQLiteOpenHelper {
         return c;
     }
 
+    public void closeDb(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.close();
+
+    }
     public void deleteTag(String tagId){
 
     }
