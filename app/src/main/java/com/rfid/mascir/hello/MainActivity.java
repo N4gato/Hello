@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     TextView  textView;
     Button Valid;
     Button history;
-    Button btnShowLocation;
     EditText editText;
 
     String tagId;
@@ -67,8 +66,9 @@ public class MainActivity extends AppCompatActivity {
         textView =  (TextView) findViewById(R.id.textView);
         Valid = (Button) findViewById(R.id.button);
         history = (Button) findViewById(R.id.history);
-        btnShowLocation = (Button) findViewById(R.id.gps);
         editText = (EditText) findViewById(R.id.editText);
+
+        gps = new GPSTracker(MainActivity.this);
 
 
        //s watch.setText(buffer);
@@ -84,33 +84,10 @@ public class MainActivity extends AppCompatActivity {
 
         super.onStart();
         valid();
-        hystory();
-        showgps();
+        history();
     }
 
 
-    public void showgps(){
-
-        btnShowLocation.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                gps = new GPSTracker(MainActivity.this);
-
-                if(gps.canGetLocation()) {
-                    double latitude = gps.getLatitude();
-                    double longitude = gps.getLongitude();
-
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Your Location is -\nLat: " + latitude + "\nLong: "
-                                    + longitude, Toast.LENGTH_LONG).show();
-                } else {
-                    gps.showSettingsAlert();
-                }
-            }
-        });
-    }
 
     public void valid(){
         Valid.setOnClickListener(new OnClickListener() {
@@ -120,6 +97,21 @@ public class MainActivity extends AppCompatActivity {
                 tagId = String.valueOf(editText.getText());
                 tag.setTagId(tagId);
                 tag.setDate(String.valueOf(date));
+
+                if (gps.canGetLocation()) {
+                    double latitude = gps.getLatitude();
+                    double longitude = gps.getLongitude();
+                    tag.setLatitude(latitude);
+                    tag.setLongitude(longitude);
+
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Your Location is -\nLat: " + latitude + "\nLong: "
+                                    + longitude, Toast.LENGTH_LONG).show();
+                } else {
+                    gps.showSettingsAlert();
+                }
+                ////////////////////////////////////////////////
                 dbHandler.addTag(tag);
                 Snackbar.make(v, "Tag Serial saved", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -129,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void hystory (){
+    public void history (){
         history.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,10 +136,12 @@ public class MainActivity extends AppCompatActivity {
                 while (c.moveToNext()) {
                     buffer.append("ID :" + c.getString(0) + "\n");
                     buffer.append("TagID :" + c.getString(1) + "\n");
-                    buffer.append("DATE :" + c.getString(2) + "\n\n ");
+                    buffer.append("DATE :" + c.getString(2) + "\n");
+                    buffer.append("Lat :" + c.getString(3) + " | ");
+                    buffer.append("Long :" + c.getString(4) + "\n\n");
                 }
 
-                dialogShow("Hustory", buffer.toString());
+                dialogShow("History", buffer.toString());
 
                 //show all data
             }
