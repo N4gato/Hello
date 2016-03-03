@@ -1,6 +1,8 @@
 package com.rfid.mascir.hello;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -29,15 +31,15 @@ public class MainActivity extends AppCompatActivity {
 
     TextView  textView;
     Button Valid;
+    Button history;
     EditText editText;
-    String tagId;
-    Editable tagIdRaw;
-    private final static String TAG = "TestActivity";
-    String FILENAME = "data";
-    FileOutputStream outputStream;
 
-    //just to try
-    FileInputStream ifs = null;
+    String tagId;
+    //create the Tag
+
+    Tag tag = new Tag();
+    Date date = new Date() ;
+    DbHandler dbHandler = new DbHandler(this,null,null,1);
 
 
     @Override
@@ -59,10 +61,11 @@ public class MainActivity extends AppCompatActivity {
 
         textView =  (TextView) findViewById(R.id.textView);
         Valid = (Button) findViewById(R.id.button);
+        history = (Button) findViewById(R.id.history);
         editText = (EditText) findViewById(R.id.editText);
 
 
-
+       //s watch.setText(buffer);
 
 
     }
@@ -74,47 +77,83 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
 
         super.onStart();
-        Log.i(TAG, "On Start .....");
+        valid();
+        hystory();
+    }
+
+
+    public void valid(){
         Valid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 tagId = String.valueOf(editText.getText());
-                //String prepare = String.format("%s", tagId + new Date());
-                String prepare = "hello saving " ;
-                try {
-                    outputStream = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-                    outputStream.write(prepare.getBytes());
-                    outputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+                tag.setTagId(tagId);
+                tag.setDate(String.valueOf(date));
+                dbHandler.addTag(tag);
                 Snackbar.make(v, "Tag Serial saved", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 //editText.setText(" ");
-
             }
         });
     }
+
+
+    public void hystory (){
+        history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Cursor c = dbHandler.db2string();
+                if (c.getCount()== 0){
+                    //watch.setText("NO DATA AVAILIBALE");
+                    dialogShow("Error","NO DATA AVAILIBALE");
+                    return;
+                }
+                StringBuffer buffer = new StringBuffer();
+                while (c.moveToNext()) {
+                    buffer.append("ID :" + c.getString(0)+"\n");
+                    buffer.append("TagID :" + c.getString(1)+"\n");
+                    buffer.append("DATE :" + c.getString(2)+"\n\n ");
+                }
+
+                dialogShow("Hustory",buffer.toString());
+
+                //show all data
+            }
+        });
+
+    }
+
+
+    public void dialogShow(String title,String message){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this );
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
+
+
+    }
+
     /* (non-Javadoc)
     * @see android.app.Activity#onPause()
     */
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(TAG, "On Pause .....");
 
-        try {
-            ifs = openFileInput(FILENAME);
-            String dataR = String.valueOf(ifs.read());
-            System.out.println("data read :"+ Arrays.toString(dataR.getBytes()));
+        //try {
+            // ifs = openFileInput(FILENAME);
+            //          String dataR = String.valueOf(ifs.read());
+//            System.out.println("data read :"+ Arrays.toString(dataR.getBytes()));
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            // } catch (FileNotFoundException e) {
+            //      e.printStackTrace();
+      //  } catch (IOException e) {
+            //      e.printStackTrace();
+      //  }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -139,38 +178,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG, "On Destroy .....");
-    }
-
-
-    /* (non-Javadoc)
-    * @see android.app.Activity#onRestart()
-    */
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.i(TAG, "On Restart .....");
-
-    }
-
-    /* (non-Javadoc)
-    * @see android.app.Activity#onResume()
-    */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "On Resume .....");
-    }
-
-    /* (non-Javadoc)
-    * @see android.app.Activity#onStop()
-    */
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.i(TAG, "On Stop .....");
-    }
 }
 

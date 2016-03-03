@@ -1,6 +1,6 @@
 package com.rfid.mascir.hello;
 
-import java.util.Date;
+
 
 /**
  * Created by mac1 on 3/1/16.
@@ -8,26 +8,27 @@ import java.util.Date;
 public class Tag {
     private int id;
     private String tagId;
-    private java.sql.Date date;
+    private String date;
 
+    public Tag() {
+
+    }
 
     // Constracter
-    public Tag(String tagId, java.sql.Date date) {
+    public Tag(String tagId, String date) {
         this.tagId = tagId;
         this.date = date;
     }
     //setters
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public void setTagId(String tagId) {
         this.tagId = tagId;
     }
 
-    public void setDate(java.sql.Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
+
     //getters
     public int getId() {
         return id;
@@ -37,7 +38,7 @@ public class Tag {
         return tagId;
     }
 
-    public java.sql.Date getDate() {
+    public String getDate() {
         return date;
     }
 }
