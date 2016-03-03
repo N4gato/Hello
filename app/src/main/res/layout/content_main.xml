@@ -51,6 +51,15 @@
         android:layout_alignTop="@+id/button"
         android:layout_alignRight="@+id/textView"
         android:layout_alignEnd="@+id/textView" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="llllllll "
+        android:id="@+id/test"
+        android:layout_margin="20dp"
+        android:layout_alignTop="@+id/button"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView" />
 
     <ImageView
         android:layout_width="wrap_content"

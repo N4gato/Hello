@@ -2,6 +2,7 @@ package com.rfid.mascir.hello;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     TextView  textView;
     Button Valid;
     Button history;
+    Button test;
     EditText editText;
 
     String tagId;
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         textView =  (TextView) findViewById(R.id.textView);
         Valid = (Button) findViewById(R.id.button);
+        test = (Button) findViewById(R.id.test);
         history = (Button) findViewById(R.id.history);
         editText = (EditText) findViewById(R.id.editText);
 
@@ -76,15 +79,30 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    public void unbound(){
+        test.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, unbound.class);
+                startActivity(i);
+
+            }
+         }
+
+            );
+        }
+
+
     /* (non-Javadoc)
   * @see android.app.Activity#onStart()
   */
-    @Override
+        @Override
     protected void onStart() {
 
         super.onStart();
         valid();
         history();
+            unbound();
     }
 
 
