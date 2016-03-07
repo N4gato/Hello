@@ -2,6 +2,7 @@ package com.rfid.mascir.hello;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,10 +14,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.Console;
 import java.io.FileInputStream;
@@ -32,10 +35,13 @@ public class MainActivity extends AppCompatActivity {
     TextView  textView;
     Button Valid;
     Button history;
+    Button test;
     EditText editText;
 
     String tagId;
     //create the Tag
+
+    GPSTracker gps;
 
     Tag tag = new Tag();
     Date date = new Date() ;
@@ -51,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -64,32 +70,52 @@ public class MainActivity extends AppCompatActivity {
         history = (Button) findViewById(R.id.history);
         editText = (EditText) findViewById(R.id.editText);
 
+        gps = new GPSTracker(MainActivity.this);
+
 
        //s watch.setText(buffer);
 
 
     }
 
+
+
     /* (non-Javadoc)
   * @see android.app.Activity#onStart()
   */
-    @Override
+        @Override
     protected void onStart() {
 
         super.onStart();
         valid();
-        hystory();
+        history();
     }
 
 
+
     public void valid(){
-        Valid.setOnClickListener(new View.OnClickListener() {
+        Valid.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 tagId = String.valueOf(editText.getText());
                 tag.setTagId(tagId);
                 tag.setDate(String.valueOf(date));
+
+                if (gps.canGetLocation()) {
+                    double latitude = gps.getLatitude();
+                    double longitude = gps.getLongitude();
+                    tag.setLatitude(latitude);
+                    tag.setLongitude(longitude);
+
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Your Location is -\nLat: " + latitude + "\nLong: "
+                                    + longitude, Toast.LENGTH_LONG).show();
+                } else {
+                    gps.showSettingsAlert();
+                }
+                ////////////////////////////////////////////////
                 dbHandler.addTag(tag);
                 Snackbar.make(v, "Tag Serial saved", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -99,25 +125,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void hystory (){
-        history.setOnClickListener(new View.OnClickListener() {
+    public void history (){
+        history.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Cursor c = dbHandler.db2string();
-                if (c.getCount()== 0){
+                if (c.getCount() == 0) {
                     //watch.setText("NO DATA AVAILIBALE");
-                    dialogShow("Error","NO DATA AVAILIBALE");
+                    dialogShow("Error", "NO DATA AVAILIBALE");
                     return;
                 }
                 StringBuffer buffer = new StringBuffer();
                 while (c.moveToNext()) {
-                    buffer.append("ID :" + c.getString(0)+"\n");
-                    buffer.append("TagID :" + c.getString(1)+"\n");
-                    buffer.append("DATE :" + c.getString(2)+"\n\n ");
+                    buffer.append("ID :" + c.getString(0) + "\n");
+                    buffer.append("TagID :" + c.getString(1) + "\n");
+                    buffer.append("DATE :" + c.getString(2) + "\n");
+                    buffer.append("Lat :" + c.getString(3) + " | ");
+                    buffer.append("Long :" + c.getString(4) + "\n\n");
                 }
 
-                dialogShow("Hustory",buffer.toString());
+                dialogShow("History", buffer.toString());
 
                 //show all data
             }
@@ -144,16 +172,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        //try {
-            // ifs = openFileInput(FILENAME);
-            //          String dataR = String.valueOf(ifs.read());
-//            System.out.println("data read :"+ Arrays.toString(dataR.getBytes()));
+    }
 
-            // } catch (FileNotFoundException e) {
-            //      e.printStackTrace();
-      //  } catch (IOException e) {
-            //      e.printStackTrace();
-      //  }
+    protected void OnDestroy(){
+        super.onDestroy();
+        dbHandler.close();
+        System.out.println("deconnection done");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

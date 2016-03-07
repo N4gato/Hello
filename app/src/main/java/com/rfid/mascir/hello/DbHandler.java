@@ -11,12 +11,14 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DbHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "mascir.db";
     private static final String TABLE_NAME = "tags";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_TAGID = "tagId";
     private static final String COLUMN_DATE = "date";
+    private static final String COLUMN_LATITUDE = "latitude";
+    private static final String COLUMN_LENGITUDE = "langitude";
 
     public DbHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -27,7 +29,9 @@ public class DbHandler extends SQLiteOpenHelper {
         String query = "CREATE TABLE " + TABLE_NAME + " ( " +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT , " +
                 COLUMN_TAGID + " TEXT , " +
-                COLUMN_DATE + " TEXT " +
+                COLUMN_DATE + " TEXT , " +
+                COLUMN_LATITUDE + " TEXT , " +
+                COLUMN_LENGITUDE + " TEXT  " +
                  ");";
         db.execSQL(query);
 
@@ -44,10 +48,10 @@ public class DbHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_TAGID, tag.getTagId());
         values.put(COLUMN_DATE, tag.getDate());
+        values.put(COLUMN_LATITUDE, tag.getLatitude());
+        values.put(COLUMN_LENGITUDE, tag.getLongitude());
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_NAME, null, values);
-
-
     }
 
     public Cursor db2string(){
@@ -68,6 +72,11 @@ public class DbHandler extends SQLiteOpenHelper {
         return c;
     }
 
+    public void closeDb(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.close();
+
+    }
     public void deleteTag(String tagId){
 
     }

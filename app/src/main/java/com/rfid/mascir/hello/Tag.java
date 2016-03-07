@@ -1,6 +1,8 @@
 package com.rfid.mascir.hello;
 
 
+import android.view.View;
+import android.widget.Toast;
 
 /**
  * Created by mac1 on 3/1/16.
@@ -9,9 +11,27 @@ public class Tag {
     private int id;
     private String tagId;
     private String date;
+    private double latitude;
+    private double longitude;
 
     public Tag() {
 
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     // Constracter
