@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
         textView =  (TextView) findViewById(R.id.textView);
         Valid = (Button) findViewById(R.id.button);
-        test = (Button) findViewById(R.id.test);
         history = (Button) findViewById(R.id.history);
         editText = (EditText) findViewById(R.id.editText);
 
@@ -80,18 +79,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void unbound(){
-        test.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, unbound.class);
-                startActivity(i);
-
-            }
-         }
-
-            );
-        }
-
 
     /* (non-Javadoc)
   * @see android.app.Activity#onStart()
@@ -102,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         valid();
         history();
-            unbound();
     }
 
 
