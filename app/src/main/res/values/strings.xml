@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Hello</string>
+    <string name="app_name">Mascir RFID APP</string>
     <string name="unbound">unbound</string>
     <string name="action_settings">Settings</string>
 </resources>
