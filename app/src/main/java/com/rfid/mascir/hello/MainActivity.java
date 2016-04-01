@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -30,7 +34,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     TextView  textView;
     Button Valid;
@@ -64,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
 
 
-
                 Cursor c = dbHandler.db2string();
                 if (c.getCount() == 0) {
                     //watch.setText("NO DATA AVAILIBALE");
@@ -85,13 +88,22 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent email = new Intent(Intent.ACTION_SEND);
                 email.putExtra(Intent.EXTRA_EMAIL, new String[]{"bouayad.n4@gmail.com"});
-                email.putExtra(Intent.EXTRA_SUBJECT, "Repport tag "+date);
+                email.putExtra(Intent.EXTRA_SUBJECT, "Repport tag " + date);
                 email.putExtra(Intent.EXTRA_TEXT, repport);
                 email.setType("message/rfc822");
                 startActivity(Intent.createChooser(email, "Please choose the trasmission channel"));
 
             }
         });
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         textView =  (TextView) findViewById(R.id.textView);
         Valid = (Button) findViewById(R.id.button);
@@ -189,17 +201,6 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle(title);
         builder.setMessage(message);
         builder.show();
-
-
-    }
-
-    /* (non-Javadoc)
-    * @see android.app.Activity#onPause()
-    */
-    @Override
-    protected void onPause() {
-        super.onPause();
-
     }
 
     protected void OnDestroy(){
@@ -207,10 +208,20 @@ public class MainActivity extends AppCompatActivity {
         dbHandler.close();
         System.out.println("deconnection done");
     }
+
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -223,12 +234,43 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            // Handle the setting action
+            dialogShow("on","Handle setting");
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        dialogShow("on","Handle navigation view item clicks here.");
+        int id = item.getItemId();
 
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+            dialogShow("on","Handle the camera action");
+
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 }
+
+
 

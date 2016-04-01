@@ -54,12 +54,13 @@
 
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/imageView"
         android:src="@drawable/mascir"
         android:layout_below="@+id/button"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="70dp" />
 
     <TextClock
         android:layout_width="wrap_content"
@@ -67,7 +68,8 @@
         android:id="@+id/textClock"
         android:layout_below="@+id/editText"
         android:layout_alignRight="@+id/history"
-        android:layout_alignEnd="@+id/history" />
+        android:layout_alignEnd="@+id/history"
+        tools:targetApi="jelly_bean_mr1" />
 
 
 </RelativeLayout>
