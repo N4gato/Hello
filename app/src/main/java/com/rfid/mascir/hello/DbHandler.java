@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DbHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "mascir.db";
     private static final String TABLE_NAME = "tags";
     private static final String COLUMN_ID = "id";
@@ -57,7 +57,7 @@ public class DbHandler extends SQLiteOpenHelper {
     public Cursor db2string(){
         //String data = "";
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM "+TABLE_NAME+" WHERE 1;";
+        String query = "SELECT * FROM "+TABLE_NAME+" WHERE 1 ORDER BY Id DESC ;";
         Cursor c = db.rawQuery(query , null);
 //        c.moveToFirst();
 //

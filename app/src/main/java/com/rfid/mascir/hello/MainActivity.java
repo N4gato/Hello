@@ -60,8 +60,36 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Sending email ...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+
+
+                Cursor c = dbHandler.db2string();
+                if (c.getCount() == 0) {
+                    //watch.setText("NO DATA AVAILIBALE");
+                    dialogShow("Error", "NO DATA AVAILIBALE");
+                    return;
+                }
+                StringBuffer buffer = new StringBuffer();
+                while (c.moveToNext()) {
+                    buffer.append("ID :" + c.getString(0) + "\n");
+                    buffer.append("TagID :" + c.getString(1) + "\n");
+                    buffer.append("DATE :" + c.getString(2) + "\n");
+                    buffer.append("Lat :" + c.getString(3) + " | ");
+                    buffer.append("Long :" + c.getString(4) + "\n\n");
+                }
+
+                String repport = buffer.toString();
+
+
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.putExtra(Intent.EXTRA_EMAIL, new String[]{"bouayad.n4@gmail.com"});
+                email.putExtra(Intent.EXTRA_SUBJECT, "Repport tag "+date);
+                email.putExtra(Intent.EXTRA_TEXT, repport);
+                email.setType("message/rfc822");
+                startActivity(Intent.createChooser(email, "Please choose the trasmission channel"));
+
             }
         });
 
