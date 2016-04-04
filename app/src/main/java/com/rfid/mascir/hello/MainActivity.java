@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -124,8 +125,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
   */
         @Override
     protected void onStart() {
+            super.onStart();
 
-        super.onStart();
         valid();
     }
 
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
 
                 tagId = String.valueOf(editText.getText());
+                editText.setText("");
                 tag.setTagId(tagId);
                 tag.setDate(String.valueOf(date));
 
@@ -218,23 +220,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        dialogShow("on","Handle navigation view item clicks here.");
+        //dialogShow("on","Handle navigation view item clicks here.");
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_history) {
             // Handle the camera action
             //dialogShow("on","Handle the camera action");
             Intent intent = new Intent(this, History.class);
             startActivity(intent);
-        } else if (id == R.id.nav_gallery) {
+        //} else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
+        //} else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
+            Cursor c = dbHandler.db2string();
+            if (c.getCount() == 0) {
+                //watch.setText("NO DATA AVAILIBALE");
+                dialogShow("Error", "NO DATA AVAILIBALE");
+                return false;
+            }
+            StringBuffer buffer = new StringBuffer();
+            while (c.moveToNext()) {
+                buffer.append("ID :" + c.getString(0) + "\n");
+                buffer.append("TagID :" + c.getString(1) + "\n");
+                buffer.append("DATE :" + c.getString(2) + "\n");
+                buffer.append("Lat :" + c.getString(3) + " | ");
+                buffer.append("Long :" + c.getString(4) + "\n\n");
+            }
+
+            String repport = buffer.toString();
+
+
+            Intent email = new Intent(Intent.ACTION_SEND);
+            email.putExtra(Intent.EXTRA_EMAIL, new String[]{"bouayad.n4@gmail.com"});
+            email.putExtra(Intent.EXTRA_TEXT, repport);
+            email.putExtra(Intent.EXTRA_SUBJECT, "Repport tag " + date);
+            email.setType("message/rfc822");
+            startActivity(Intent.createChooser(email, "Please choose the trasmission channel"));
 
         }
 
