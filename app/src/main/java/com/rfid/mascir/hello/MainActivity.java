@@ -142,6 +142,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 tag.setTagId(tagId);
                 tag.setDate(String.valueOf(date));
 
+                if(dbHandler.isThere(tagId)){
+                    Intent intent = new Intent(MainActivity.this, History.class);
+                    startActivity(intent);
+                }else{
+                    Intent form = new Intent(MainActivity.this, Form.class);
+                    form.putExtra("tagId", tagId);
+                    startActivity(form);
+                    return ;
+                }
+
                 if (gps.canGetLocation()) {
                     double latitude = gps.getLatitude();
                     double longitude = gps.getLongitude();
@@ -155,6 +165,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     gps.showSettingsAlert();
                 }
+                tag.setBorn("04/14/1993");
+                tag.setOwner("otmane Bouayad");
+                tag.setRace("Wild");
                 ////////////////////////////////////////////////
                 dbHandler.addTag(tag);
                 Snackbar.make(v, "Tag Serial saved", Snackbar.LENGTH_LONG)
@@ -226,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_history) {
             // Handle the camera action
             //dialogShow("on","Handle the camera action");
-            Intent intent = new Intent(this, History.class);
+            Intent intent = new Intent(MainActivity.this, History.class);
             startActivity(intent);
         //} else if (id == R.id.nav_gallery) {
 

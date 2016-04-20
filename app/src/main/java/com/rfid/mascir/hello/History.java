@@ -54,11 +54,13 @@ public class History extends AppCompatActivity {
                 }
                 StringBuffer buffer = new StringBuffer();
                 while (c.moveToNext()) {
-                    buffer.append("ID :" + c.getString(0) + "\n");
-                    buffer.append("TagID :" + c.getString(1) + "\n");
-                    buffer.append("DATE :" + c.getString(2) + "\n");
+                    buffer.append("Tag ID :" + c.getString(0) + "\n");
+                    buffer.append("Date :" + c.getString(1) + "\n");
+                    buffer.append("Born :" + c.getString(2) + "\n");
                     buffer.append("Lat :" + c.getString(3) + " | ");
-                    buffer.append("Long :" + c.getString(4) + "\n\n");
+                    buffer.append("Long :" + c.getString(4) + "\n");
+                    buffer.append("Owner :" + c.getString(5) + "\n");
+                    buffer.append("Race :" + c.getString(6) + "\n\n");
                 }
 
                 String repport = buffer.toString();
@@ -94,11 +96,13 @@ public class History extends AppCompatActivity {
                 }
                 StringBuffer buffer = new StringBuffer();
                 while (c.moveToNext()) {
-                    buffer.append("ID :" + c.getString(0) + "\n");
-                    buffer.append("TagID :" + c.getString(1) + "\n");
-                    buffer.append("DATE :" + c.getString(2) + "\n");
+                    buffer.append("Tag ID :" + c.getString(0) + "\n");
+                    buffer.append("Date :" + c.getString(1) + "\n");
+                    buffer.append("Born :" + c.getString(2) + "\n");
                     buffer.append("Lat :" + c.getString(3) + " | ");
-                    buffer.append("Long :" + c.getString(4) + "\n\n");
+                    buffer.append("Long :" + c.getString(4) + "\n");
+                    buffer.append("Owner :" + c.getString(5) + "\n");
+                    buffer.append("Race :" + c.getString(6) + "\n\n");
                 }
                 history.setText(buffer.toString());
     }

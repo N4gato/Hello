@@ -8,14 +8,22 @@ import android.widget.Toast;
  * Created by mac1 on 3/1/16.
  */
 public class Tag {
-    private int id;
     private String tagId;
     private String date;
+    private String born;
+    private String race;
+    private String owner;
     private double latitude;
     private double longitude;
 
     public Tag() {
 
+    }
+
+    // Constracter
+    public Tag(String tagId, String date) {
+        this.tagId = tagId;
+        this.date = date;
     }
 
     public double getLatitude() {
@@ -30,16 +38,29 @@ public class Tag {
         this.longitude = longitude;
     }
 
+    public String getTagId() {
+        return tagId;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getBorn() {
+        return born;
+    }
+
+    public String getRace() {
+        return race;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
     public double getLongitude() {
         return longitude;
     }
-
-    // Constracter
-    public Tag(String tagId, String date) {
-        this.tagId = tagId;
-        this.date = date;
-    }
-    //setters
 
     public void setTagId(String tagId) {
         this.tagId = tagId;
@@ -49,16 +70,16 @@ public class Tag {
         this.date = date;
     }
 
-    //getters
-    public int getId() {
-        return id;
+    public void setBorn(String born) {
+        this.born = born;
     }
 
-    public String getTagId() {
-        return tagId;
+    public void setRace(String race) {
+        this.race = race;
     }
 
-    public String getDate() {
-        return date;
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
+
 }
